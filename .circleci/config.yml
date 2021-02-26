@@ -1,77 +1,13 @@
-run_tests: &run_tests
-    - run:
-        name: install zenpy
-        command: |
-          python -m venv venv
-          . venv/bin/activate
-          pip install -r requirements.dev
-          make unittest
-
-version: 2
-jobs:
-  python2.7:
-    docker:
-      - image: circleci/python:2.7.16-stretch
-    working_director: ~/repo
-    steps:
-      - run:
-          name: install virtualenv
-          command: sudo pip2 install virtualenv
-      - checkout
-      - run:
-          name: install zenpy
-          command: |
-            python2 -m virtualenv venv
-            . venv/bin/activate
-            pip2 install -r requirements.dev
-            make unittest
-  python3.5:
-    docker:
-      - image: circleci/python:3.5.7-stretch
-    working_director: ~/repo
-    steps:
-      - run:
-          name: install virtualenv
-          command: sudo pip3 install virtualenv
-      - checkout
-      - <<: *run_tests
-  python3.6:
-    docker:
-      - image: circleci/python:3.6.8-stretch
-    working_director: ~/repo
-    steps:
-      - run:
-          name: install virtualenv
-          command: sudo pip3 install virtualenv
-      - checkout
-      - <<: *run_tests
-  python3.7:
-    docker:
-      - image: circleci/python:3.7.3-stretch
-    working_director: ~/repo
-    steps:
-      - run:
-          name: install virtualenv
-          command: sudo pip3 install virtualenv
-      - checkout
-      - <<: *run_tests
-  python3.8:
-    docker:
-      - image: circleci/python:3.8.0a3-stretch
-    working_director: ~/repo
-    steps:
-      - run:
-          name: install virtualenv
-          command: sudo pip3 install virtualenv
-      - checkout
-      - <<: *run_tests
-
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  version: 2
-  build_and_test:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - python2.7
-      - python3.5
-      - python3.6
-      - python3.7
-      - python3.8
+      - welcome/run
